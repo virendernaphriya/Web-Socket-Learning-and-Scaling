@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Web Socket</h1>
+
+    <input type="text" placeholder="Enter a msg" id="msg">
+    <button id="sendBtn">Send</button>
+    <ul id="msgContainer"></ul>
+    
+    <script>
+
+        const {port}=window.location;
+        const ws=new WebSocket(`ws://localhost:${port}`);
+
+        //Dom Elements
+
+        const msg=document.getElementById('msg');
+        const sendBtn=document.getElementById('sendBtn');
+        const listContainer=document.getElementById('msgContainer');
+
+        
+        
+        ws.onopen=()=>{
+            sendBtn.addEventListener("click",(event)=>{
+                const value=msg.value;
+                ws.send(JSON.stringify({"message":value}))
+            })
+        }
+
+        ws.onmessage=(msg)=>{
+            const data=JSON.parse(msg.data)
+            console.log('data is :',data)
+            const li=document.createElement('li');
+            li.innerText=data.message;
+            listContainer.appendChild(li);
+            msg.value="";
+        }
+        
+    </script>
+</body>
+</html>
